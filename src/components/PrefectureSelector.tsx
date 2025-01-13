@@ -3,7 +3,7 @@ import { Prefecture } from '../types/api'
 import { fetchPrefectures } from '../api/client'
 
 type Props = {
-  onSelect: (prefCode: number, checked: boolean) => void
+  onSelect: (prefCode: number, checked: boolean, prefecture: Prefecture) => void
 }
 
 export const PrefectureSelector: FC<Props> = ({ onSelect }) => {
@@ -27,13 +27,17 @@ export const PrefectureSelector: FC<Props> = ({ onSelect }) => {
     return <div className="text-red-500">{error}</div>
   }
 
+  const handleChange = (pref: Prefecture, checked: boolean) => {
+    onSelect(pref.prefCode, checked, pref)
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
       {prefectures.map((pref) => (
         <label key={pref.prefCode} className="flex items-center space-x-2">
           <input
             type="checkbox"
-            onChange={(e) => onSelect(pref.prefCode, e.target.checked)}
+            onChange={(e) => handleChange(pref, e.target.checked)}
           />
           <span>{pref.prefName}</span>
         </label>
