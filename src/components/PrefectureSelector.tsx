@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { Prefecture } from '../types/api'
+import { Prefecture } from '../types/population'
 import { fetchPrefectures } from '../api/client'
 
 type Props = {

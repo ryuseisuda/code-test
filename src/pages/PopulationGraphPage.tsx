@@ -3,9 +3,7 @@ import { PrefectureSelector } from '../components/PrefectureSelector'
 import { PopulationTypeSelector } from '../components/PopulationTypeSelector'
 import { PopulationGraph } from '../components/PopulationGraph'
 import { fetchPopulationBulk } from '../api/client'
-import { PopulationResponse, Prefecture } from '../types/api'
-
-type PopulationType = '総人口' | '年少人口' | '生産年齢人口' | '老年人口'
+import { PopulationType,Prefecture, PopulationResponse } from '../types/population'
 
 const PopulationGraphPage: FC = () => {
   const [selectedPrefCodes, setSelectedPrefCodes] = useState<number[]>([])

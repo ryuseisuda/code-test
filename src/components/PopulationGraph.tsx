@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { PopulationResponse } from '../types/api'
+import { PopulationResponse } from '../types/population'
 
 type Props = {
   data: PopulationResponse[]
