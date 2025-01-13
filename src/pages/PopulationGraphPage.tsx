@@ -1,12 +1,13 @@
 import { FC, useState } from 'react'
 import { PrefectureSelector } from '../components/PrefectureSelector'
+import { PopulationTypeSelector } from '../components/PopulationTypeSelector'
 
 type PopulationType = '総人口' | '年少人口' | '生産年齢人口' | '老年人口'
 
 const PopulationGraphPage: FC = () => {
   const [selectedPrefCodes, setSelectedPrefCodes] = useState<number[]>([])
   const [populationType, setPopulationType] = useState<PopulationType>('総人口')
-
+  
   const handlePrefectureSelect = (prefCode: number, checked: boolean) => {
     if (checked) {
       setSelectedPrefCodes([...selectedPrefCodes, prefCode])
@@ -18,6 +19,10 @@ const PopulationGraphPage: FC = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-center mb-8">都道府県別人口推移</h1>
+      <PopulationTypeSelector 
+        selected={populationType} 
+        onChange={setPopulationType} 
+      />
       <PrefectureSelector onSelect={handlePrefectureSelect} />
     </div>
   )
