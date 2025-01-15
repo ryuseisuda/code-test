@@ -24,6 +24,8 @@ export const fetchPopulation = async (prefCode: number) => {
       },
     }
   )
+    
+    console.log('response', response)
 
   if (!response.ok) {
     throw new Error(`人口データの取得に失敗しました: 都道府県コード ${prefCode}`)

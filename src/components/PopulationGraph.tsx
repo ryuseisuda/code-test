@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import {
   LineChart,
   Line,
@@ -9,87 +9,87 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { PopulationResponse } from '../types/population'
+import { PopulationGraphProps } from '../types/population'
+import { GRAPH_COLORS } from '../constants/population'
 
-type Props = {
-  data: PopulationResponse[]
-  populationType: '総人口' | '年少人口' | '生産年齢人口' | '老年人口'
-  prefectures: { prefCode: number; prefName: string }[]
-}
+export const PopulationGraph: FC<PopulationGraphProps> = ({ 
+  data, 
+  populationType, 
+  prefectures 
+}) => {
+  // データを整形
+  const chartData = data.reduce((acc, prefData, index) => {
+    const prefecture = prefectures[index]
+    if (!prefecture) return acc
 
-export const PopulationGraph: FC<Props> = ({ data, populationType, prefectures }) => {
-  const processedData = useMemo(() => {
-    if (!data.length) return []
+    const typeData = prefData.result.data.find(d => d.label === populationType)
+    if (!typeData) return acc
 
-    const firstPrefData = data[0].result.data.find(d => d.label === populationType)
-    if (!firstPrefData) return []
-
-    return firstPrefData.data.map(yearData => {
-      const yearEntry: { [key: string]: number | string } = {
-        year: yearData.year,
+    typeData.data.forEach(({ year, value }) => {
+      const existingYear = acc.find(d => d.year === year)
+      if (existingYear) {
+        existingYear[prefecture.prefName] = value
+      } else {
+        acc.push({ year, [prefecture.prefName]: value })
       }
-
-      data.forEach((prefData, index) => {
-        const prefecture = prefectures[index]
-        if (!prefecture) return
-
-        const populationTypeData = prefData.result.data.find(d => d.label === populationType)
-        if (!populationTypeData) return
-
-        const matchingYearData = populationTypeData.data.find(d => d.year === yearData.year)
-        if (matchingYearData) {
-          yearEntry[prefecture.prefName] = matchingYearData.value
-        }
-      })
-
-      return yearEntry
     })
-  }, [data, populationType, prefectures])
+    return acc
+  }, [] as { year: number; [key: string]: number }[])
 
-  const colors = [
-    '#8884d8', '#82ca9d', '#ffc658', '#ff7300', 
-    '#0088FE', '#00C49F', '#FFBB28', '#FF8042'
-  ]
-
-  if (!processedData.length) {
+  if (chartData.length === 0) {
     return <div>データがありません</div>
   }
 
   return (
-    <div className="w-full h-[500px] mt-8">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={processedData}
-          margin={{ top: 10, right: 30, left: 60, bottom: 30 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="year"
-            label={{ value: '年度', position: 'bottom', offset: 0 }}
-          />
-          <YAxis
-            label={{ 
-              value: '人口数', 
-              angle: -90,
-              position: 'insideLeft',
-              offset: -10
+    <div className="w-full mt-8">
+      <h2 className="text-2xl font-bold mb-4">{populationType}</h2>
+      <div style={{ width: '100%', height: '400px' }}>
+        <ResponsiveContainer>
+          <LineChart
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
             }}
-          />
-          <Tooltip />
-          <Legend verticalAlign="top" height={36}/>
-          {prefectures.map((pref, index) => (
-            <Line
-              key={pref.prefCode}
-              type="monotone"
-              dataKey={pref.prefName}
-              stroke={colors[index % colors.length]}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 8 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="year" 
+              label={{ 
+                value: '年度', 
+                position: 'bottom', 
+                offset: -5 
+              }}
             />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
+            <YAxis
+              label={{ 
+                value: '人口数', 
+                angle: -90, 
+                position: 'insideLeft',
+                offset: -5
+              }}
+              tickFormatter={(value) => `${(value / 10000).toFixed(0)}万`}
+            />
+            <Tooltip 
+              formatter={(value: number) => [`${value.toLocaleString()}人`]}
+              labelFormatter={(label) => `${label}年`}
+            />
+            <Legend />
+            {prefectures.map((prefecture, index) => (
+              <Line
+                key={prefecture.prefCode}
+                type="monotone"
+                dataKey={prefecture.prefName}
+                stroke={GRAPH_COLORS[index % GRAPH_COLORS.length]}
+                strokeWidth={2}
+                dot={{ r: 4 }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 } 
