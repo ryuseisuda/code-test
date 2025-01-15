@@ -17,7 +17,7 @@ export const PopulationGraph: FC<PopulationGraphProps> = ({
   populationType, 
   prefectures 
 }) => {
-  // データを整形
+  console.log('data', data)
   const chartData = data.reduce((acc, prefData, index) => {
     const prefecture = prefectures[index]
     if (!prefecture) return acc
