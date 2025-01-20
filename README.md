@@ -1,52 +1,69 @@
-# React + TypeScript + Vite
+# 都道府県別人口推移グラフ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RESAS(地域経済分析システム) APIを使用して、都道府県別の人口推移をグラフ化するWebアプリケーションです。
 
-Currently, two official plugins are available:
+## 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 都道府県の複数選択
+- 人口種別（総人口、年少人口、生産年齢人口、老年人口）の切り替え
+- 選択した都道府県の人口推移をグラフで表示
+- レスポンシブ対応
 
-## Expanding the ESLint configuration
+## 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18
+- TypeScript
+- Vite
+- TailwindCSS
+- Recharts（グラフ描画）
+- ESLint + Prettier
 
-- Configure the top-level `parserOptions` property like this:
+## 開発環境のセットアップ
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. リポジトリのクローン
+2. パッケージインストール
+
+```bash
+npm install
+```
+3. 環境変数の設定
+
+```bash
+cp .env.example .env
+```
+4. 開発サーバー起動
+
+```bash
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+利用可能なスクリプト
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+npm run format
 ```
 
-# code-test
+プロジェクト構成
+
+```
+src/
+├── api/
+│   ├── client.ts
+│   └── types/
+│       └── population.ts
+├── components/
+│   └── PopulationGraph.tsx
+├── App.tsx
+├── index.html
+├── main.tsx
+├── vite.config.ts
+├── .env
+├── .eslintrc.js
+├── .prettierrc
+└── package.json
+```
+
