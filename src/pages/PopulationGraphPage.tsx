@@ -3,11 +3,17 @@ import { PrefectureSelector } from '../components/PrefectureSelector'
 import { PopulationTypeSelector } from '../components/PopulationTypeSelector'
 import { PopulationGraph } from '../components/PopulationGraph'
 import { fetchPopulationBulk } from '../api/client'
-import { PopulationType,Prefecture, PopulationResponse } from '../types/population'
+import {
+  PopulationType,
+  Prefecture,
+  PopulationResponse,
+} from '../types/population'
 
 const PopulationGraphPage: FC = () => {
   const [selectedPrefCodes, setSelectedPrefCodes] = useState<number[]>([])
-  const [selectedPrefectures, setSelectedPrefectures] = useState<Prefecture[]>([])
+  const [selectedPrefectures, setSelectedPrefectures] = useState<Prefecture[]>(
+    []
+  )
   const [populationType, setPopulationType] = useState<PopulationType>('総人口')
   const [populationData, setPopulationData] = useState<PopulationResponse[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -27,22 +33,29 @@ const PopulationGraphPage: FC = () => {
         const data = await fetchPopulationBulk(selectedPrefCodes)
         setPopulationData(data)
       } catch (err) {
-        setError(`人口データの取得に失敗しました: ${err}`)
+        const errorMessage = err instanceof Error ? err.message : '不明なエラー'
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchData()
+    void fetchData()
   }, [selectedPrefCodes])
 
-  const handlePrefectureSelect = (prefCode: number, checked: boolean, prefecture: Prefecture) => {
+  const handlePrefectureSelect = (
+    prefCode: number,
+    checked: boolean,
+    prefecture: Prefecture
+  ) => {
     if (checked) {
       setSelectedPrefCodes([...selectedPrefCodes, prefCode])
       setSelectedPrefectures([...selectedPrefectures, prefecture])
     } else {
       setSelectedPrefCodes(selectedPrefCodes.filter(code => code !== prefCode))
-      setSelectedPrefectures(selectedPrefectures.filter(pref => pref.prefCode !== prefCode))
+      setSelectedPrefectures(
+        selectedPrefectures.filter(pref => pref.prefCode !== prefCode)
+      )
     }
   }
 
@@ -52,14 +65,14 @@ const PopulationGraphPage: FC = () => {
         <h1 className="text-3xl font-bold text-gray-900 text-center mb-8">
           都道府県別人口推移グラフ
         </h1>
-        
+
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             人口種別の選択
           </h2>
-          <PopulationTypeSelector 
-            selected={populationType} 
-            onChange={setPopulationType} 
+          <PopulationTypeSelector
+            selected={populationType}
+            onChange={setPopulationType}
           />
         </div>
 
@@ -75,13 +88,21 @@ const PopulationGraphPage: FC = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         )}
-        
+
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-8">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">

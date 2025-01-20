@@ -1,44 +1,45 @@
 export type PopulationType = '総人口' | '年少人口' | '生産年齢人口' | '老年人口'
 
-export type PopulationGraphProps = {
+export interface PopulationGraphProps {
   data: PopulationResponse[]
   populationType: PopulationType
   prefectures: Prefecture[]
 }
 
-export type PopulationTypeSelectorProps = {
+export interface PopulationTypeSelectorProps {
   selected: PopulationType
   onChange: (type: PopulationType) => void
 }
 
-export type PrefectureSelectorProps = {
+export interface PrefectureSelectorProps {
   onSelect: (prefCode: number, checked: boolean, prefecture: Prefecture) => void
-} 
-export type Prefecture = {
+}
+
+export interface Prefecture {
   prefCode: number
   prefName: string
 }
 
-export type PrefecturesResponse = {
+export interface PrefecturesResponse {
   message: string | null
   result: Prefecture[]
 }
 
-export type PopulationData = {
+export interface PopulationData {
   year: number
   value: number
   rate: number
 }
 
-export type PopulationComposition = {
+export interface PopulationComposition {
   label: string
   data: PopulationData[]
 }
 
-export type PopulationResponse = {
+export interface PopulationResponse {
   message: string | null
   result: {
     boundaryYear: number
     data: PopulationComposition[]
   }
-} 
+}

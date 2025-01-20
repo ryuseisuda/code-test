@@ -12,29 +12,33 @@ import {
 import { PopulationGraphProps } from '../types/population'
 import { GRAPH_COLORS } from '../constants/population'
 
-export const PopulationGraph: FC<PopulationGraphProps> = ({ 
-  data, 
-  populationType, 
-  prefectures 
+export const PopulationGraph: FC<PopulationGraphProps> = ({
+  data,
+  populationType,
+  prefectures,
 }) => {
-  console.log('data', data)
-  const chartData = data.reduce((acc, prefData, index) => {
-    const prefecture = prefectures[index]
-    if (!prefecture) return acc
+  const chartData = data.reduce(
+    (acc, prefData, index) => {
+      const prefecture = prefectures[index]
+      if (!prefecture) return acc
 
-    const typeData = prefData.result.data.find(d => d.label === populationType)
-    if (!typeData) return acc
+      const typeData = prefData.result.data.find(
+        d => d.label === populationType
+      )
+      if (!typeData) return acc
 
-    typeData.data.forEach(({ year, value }) => {
-      const existingYear = acc.find(d => d.year === year)
-      if (existingYear) {
-        existingYear[prefecture.prefName] = value
-      } else {
-        acc.push({ year, [prefecture.prefName]: value })
-      }
-    })
-    return acc
-  }, [] as { year: number; [key: string]: number }[])
+      typeData.data.forEach(({ year, value }) => {
+        const existingYear = acc.find(d => d.year === year)
+        if (existingYear) {
+          existingYear[prefecture.prefName] = value
+        } else {
+          acc.push({ year, [prefecture.prefName]: value })
+        }
+      })
+      return acc
+    },
+    [] as { year: number; [key: string]: number }[]
+  )
 
   if (chartData.length === 0) {
     return <div>データがありません</div>
@@ -55,26 +59,26 @@ export const PopulationGraph: FC<PopulationGraphProps> = ({
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="year" 
-              label={{ 
-                value: '年度', 
-                position: 'bottom', 
-                offset: -5 
+            <XAxis
+              dataKey="year"
+              label={{
+                value: '年度',
+                position: 'bottom',
+                offset: -5,
               }}
             />
             <YAxis
-              label={{ 
-                value: '人口数', 
-                angle: -90, 
+              label={{
+                value: '人口数',
+                angle: -90,
                 position: 'insideLeft',
-                offset: -5
+                offset: -5,
               }}
-              tickFormatter={(value) => `${(value / 10000).toFixed(0)}万`}
+              tickFormatter={value => `${(value / 10000).toFixed(0)}万`}
             />
-            <Tooltip 
+            <Tooltip
               formatter={(value: number) => [`${value.toLocaleString()}人`]}
-              labelFormatter={(label) => `${label}年`}
+              labelFormatter={label => `${label}年`}
             />
             <Legend />
             {prefectures.map((prefecture, index) => (
@@ -92,4 +96,4 @@ export const PopulationGraph: FC<PopulationGraphProps> = ({
       </div>
     </div>
   )
-} 
+}

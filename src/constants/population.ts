@@ -1,4 +1,4 @@
-import { PopulationType } from "../types/population"
+import { PopulationType } from '../types/population'
 
 export const POPULATION_TYPES: PopulationType[] = [
   '総人口',
@@ -16,4 +16,4 @@ export const GRAPH_COLORS = [
   '#00C49F',
   '#FFBB28',
   '#FF8042',
-] 
+]
