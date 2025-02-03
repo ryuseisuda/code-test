@@ -1,9 +1,9 @@
-import PopulationGraph from './pages/PopulationGraphPage'
+import { PopulationGraphPage } from './pages/PopulationGraphPage'
 
 function App() {
   return (
     <>
-      <PopulationGraph />
+      <PopulationGraphPage />
     </>
   )
 }
