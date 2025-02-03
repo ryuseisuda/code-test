@@ -38,7 +38,6 @@ export const fetchPopulation = async (
   return response.json() as Promise<PopulationResponse>
 }
 
-// 複数の都道府県の人口データを一括取得
 export const fetchPopulationBulk = async (
   prefCodes: number[]
 ): Promise<PopulationResponse[]> => {

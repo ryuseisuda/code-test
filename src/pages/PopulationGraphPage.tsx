@@ -1,63 +1,26 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useMemo } from 'react'
+import { PopulationTypeSection } from '../components/PopulationTypeSection'
 import { PrefectureSelector } from '../components/PrefectureSelector'
-import { PopulationTypeSelector } from '../components/PopulationTypeSelector'
 import { PopulationGraph } from '../components/PopulationGraph'
-import { fetchPopulationBulk } from '../api/client'
-import {
-  PopulationType,
-  Prefecture,
-  PopulationResponse,
-} from '../types/population'
+import { useSelectedPrefectures } from '../hooks/useSelectedPrefectures'
+import { usePopulationType } from '../hooks/usePopulationType'
+import { usePopulationData } from '../hooks/usePopulationData'
 
-const PopulationGraphPage: FC = () => {
-  const [selectedPrefCodes, setSelectedPrefCodes] = useState<number[]>([])
-  const [selectedPrefectures, setSelectedPrefectures] = useState<Prefecture[]>(
-    []
-  )
-  const [populationType, setPopulationType] = useState<PopulationType>('総人口')
-  const [populationData, setPopulationData] = useState<PopulationResponse[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string>('')
+export const PopulationGraphPage: FC = () => {
+  const { selectedPrefCodes, selectedPrefectures, handlePrefectureSelect } =
+    useSelectedPrefectures()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (selectedPrefCodes.length === 0) {
-        setPopulationData([])
-        return
-      }
+  const { populationType, handlePopulationTypeChange } = usePopulationType()
 
-      setIsLoading(true)
-      setError('')
+  const { populationData, isLoading, error } =
+    usePopulationData(selectedPrefCodes)
 
-      try {
-        const data = await fetchPopulationBulk(selectedPrefCodes)
-        setPopulationData(data)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : '不明なエラー'
-        setError(errorMessage)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    void fetchData()
-  }, [selectedPrefCodes])
-
-  const handlePrefectureSelect = (
-    prefCode: number,
-    checked: boolean,
-    prefecture: Prefecture
-  ) => {
-    if (checked) {
-      setSelectedPrefCodes([...selectedPrefCodes, prefCode])
-      setSelectedPrefectures([...selectedPrefectures, prefecture])
-    } else {
-      setSelectedPrefCodes(selectedPrefCodes.filter(code => code !== prefCode))
-      setSelectedPrefectures(
-        selectedPrefectures.filter(pref => pref.prefCode !== prefCode)
-      )
-    }
-  }
+  // グラフデータの計算をメモ化
+  const memoizedData = useMemo(() => {
+    if (!populationData.length) return []
+    // データ加工ロジック
+    return populationData
+  }, [populationData])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -66,22 +29,12 @@ const PopulationGraphPage: FC = () => {
           都道府県別人口推移グラフ
         </h1>
 
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            人口種別の選択
-          </h2>
-          <PopulationTypeSelector
-            selected={populationType}
-            onChange={setPopulationType}
-          />
-        </div>
+        <PopulationTypeSection
+          selected={populationType}
+          onChange={handlePopulationTypeChange}
+        />
 
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            都道府県の選択
-          </h2>
-          <PrefectureSelector onSelect={handlePrefectureSelect} />
-        </div>
+        <PrefectureSelector onSelect={handlePrefectureSelect} />
 
         {isLoading && (
           <div className="flex justify-center items-center py-12">
@@ -112,10 +65,10 @@ const PopulationGraphPage: FC = () => {
           </div>
         )}
 
-        {!isLoading && !error && populationData.length > 0 && (
+        {!isLoading && !error && memoizedData.length > 0 && (
           <div className="bg-white rounded-lg shadow p-6">
             <PopulationGraph
-              data={populationData}
+              data={memoizedData}
               populationType={populationType}
               prefectures={selectedPrefectures}
             />
@@ -125,5 +78,3 @@ const PopulationGraphPage: FC = () => {
     </div>
   )
 }
-
-export default PopulationGraphPage

@@ -1,34 +1,22 @@
-import { FC, useEffect, useState } from 'react'
-import { Prefecture, PrefectureSelectorProps } from '../types/population'
-import { fetchPrefectures } from '../api/client'
+import { FC } from 'react'
+import { PrefectureSelectorProps } from '../types/population'
+import { usePrefectures } from '../hooks/usePrefectures'
 
 export const PrefectureSelector: FC<PrefectureSelectorProps> = ({
   onSelect,
 }) => {
-  const [prefectures, setPrefectures] = useState<Prefecture[]>([])
-  const [error, setError] = useState<string>('')
+  const { prefectures, isLoading, error } = usePrefectures()
 
-  useEffect(() => {
-    const getPrefectures = async () => {
-      try {
-        const data = await fetchPrefectures()
-        setPrefectures(data.result)
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : '不明なエラー'
-        setError(`都道府県データの取得に失敗しました: ${errorMessage}`)
-      }
-    }
-
-    void getPrefectures()
-  }, [])
+  if (isLoading) {
+    return <div>読み込み中...</div>
+  }
 
   if (error) {
     return <div className="text-red-500">{error}</div>
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 bg-white rounded-lg shadow p-6 mb-8">
       {prefectures.map(pref => (
         <label key={pref.prefCode} className="flex items-center space-x-2">
           <input
