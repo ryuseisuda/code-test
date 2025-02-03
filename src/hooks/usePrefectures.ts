@@ -11,12 +11,13 @@ export const usePrefectures = () => {
     const getPrefectures = async () => {
       setIsLoading(true)
       setError('')
-      
+
       try {
         const data = await fetchPrefectures()
         setPrefectures(data.result)
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : '不明なエラー'
+        const errorMessage =
+          error instanceof Error ? error.message : '不明なエラー'
         setError(errorMessage)
       } finally {
         setIsLoading(false)
@@ -31,4 +32,4 @@ export const usePrefectures = () => {
     isLoading,
     error,
   }
-} 
+}

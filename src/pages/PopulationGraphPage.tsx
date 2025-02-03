@@ -7,29 +7,20 @@ import { usePopulationType } from '../hooks/usePopulationType'
 import { usePopulationData } from '../hooks/usePopulationData'
 
 export const PopulationGraphPage: FC = () => {
-  const {
-    selectedPrefCodes,
-    selectedPrefectures,
-    handlePrefectureSelect,
-  } = useSelectedPrefectures()
+  const { selectedPrefCodes, selectedPrefectures, handlePrefectureSelect } =
+    useSelectedPrefectures()
 
-  const {
-    populationType,
-    handlePopulationTypeChange,
-  } = usePopulationType()
+  const { populationType, handlePopulationTypeChange } = usePopulationType()
 
-  const {
-    populationData,
-    isLoading,
-    error,
-  } = usePopulationData(selectedPrefCodes)
+  const { populationData, isLoading, error } =
+    usePopulationData(selectedPrefCodes)
 
   // グラフデータの計算をメモ化
   const memoizedData = useMemo(() => {
     if (!populationData.length) return []
     // データ加工ロジック
     return populationData
-  }, [populationData, populationType])
+  }, [populationData])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,9 +34,7 @@ export const PopulationGraphPage: FC = () => {
           onChange={handlePopulationTypeChange}
         />
 
-        <PrefectureSelector 
-          onSelect={handlePrefectureSelect}
-        />
+        <PrefectureSelector onSelect={handlePrefectureSelect} />
 
         {isLoading && (
           <div className="flex justify-center items-center py-12">

@@ -8,4 +8,4 @@ export const usePopulationType = () => {
     populationType,
     handlePopulationTypeChange: setPopulationType,
   }
-} 
+}

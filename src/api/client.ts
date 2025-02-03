@@ -38,7 +38,6 @@ export const fetchPopulation = async (
   return response.json() as Promise<PopulationResponse>
 }
 
-
 export const fetchPopulationBulk = async (
   prefCodes: number[]
 ): Promise<PopulationResponse[]> => {

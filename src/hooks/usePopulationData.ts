@@ -36,4 +36,4 @@ export const usePopulationData = (selectedPrefCodes: number[]) => {
     isLoading,
     error,
   }
-} 
+}

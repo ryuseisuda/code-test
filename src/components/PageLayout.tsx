@@ -16,4 +16,4 @@ export const PageLayout: FC<PageLayoutProps> = ({ title, children }) => {
       </div>
     </div>
   )
-} 
+}

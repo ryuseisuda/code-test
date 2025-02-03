@@ -8,7 +8,7 @@ export interface PopulationGraphProps {
 
 export interface PopulationTypeSelectorProps {
   selected: PopulationType
-  onChange: (type: PopulationType) => void
+  onChange: (_type: PopulationType) => void
 }
 
 export interface PrefectureSelectorProps {
